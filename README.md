@@ -50,3 +50,34 @@ Os status da enquete foram definidos com base nas datas de início, término e q
 - Finalizado → A data atual ultrapassou a data de término da enquete.
 
 ---
+
+## Modelagem do Banco de dados
+
+### Entidade: Poll
+
+Responsável por armazenar as informações principais da enquete.
+
+- `id` → Identificador único da enquete
+- `title` → Título da enquete.
+- `startDate` → Data de inicio da enquete
+- `endDate` → Data de término da enquete
+- `createdAt` → Data de criação da enquete
+- `updatedAt` → Data de edição da enquete
+
+### Entidade: PollOption
+
+Responsável por armazenar as opções de resposta de uma enquete.
+
+- `id` → Identificador único da opção
+- `title` → Texto da opção
+- `pollId` → Chave ID da enquete relacionada
+- `createdAt` → Data de criação da enquete
+- `updatedAt` → Data de edição da enquete
+
+### Entidade: Vote
+
+Responsável por registrar os votos nas opções da enquete.
+
+- `id` → Identificador do voto
+- `pollOptionId` → Chave ID da opção votada
+- `createdAt` → Data do voto
