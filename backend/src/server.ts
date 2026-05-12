@@ -1,10 +1,9 @@
 import Fastify from "fastify";
+import { pollRoutes } from "./routes/poll-routes.js";
 
 const app = Fastify();
 
-app.get("/", async (request, reply) => {
-  return { ok: true };
-});
+app.register(pollRoutes);
 
 app
   .listen({ port: 3333 })
