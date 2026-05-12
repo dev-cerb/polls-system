@@ -81,3 +81,65 @@ Responsável por registrar os votos nas opções da enquete.
 - `id` → Identificador do voto
 - `pollOptionId` → Chave ID da opção votada
 - `createdAt` → Data do voto
+
+---
+
+## Rodando o Projeto
+
+### Clone o repositório
+
+```bash
+git clone https://github.com/dev-cerb/polls-system
+```
+
+### Acesse a pasta do projeto
+
+```bash
+cd polls-system
+```
+
+### Suba o container PostgreSQL
+
+Na raiz do projeto:
+
+```bash
+docker compose up -d
+```
+
+### Acesse a pasta backend
+
+```bash
+cd backend
+```
+
+### Instale as dependências
+
+```bash
+npm install
+```
+
+### Configure as variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do backend:
+
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/postgres"
+```
+
+### Execute as migrations
+
+```bash
+npx prisma migrate dev
+```
+
+### Gere o Prisma Client
+
+```bash
+npx prisma generate
+```
+
+### Inicie o servidor
+
+```bash
+npm run dev
+```
