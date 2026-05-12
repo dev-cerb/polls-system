@@ -8,7 +8,7 @@ import {
 } from "../schemas/poll-schemas.js";
 
 type CreatePollSchema = z.infer<typeof createPollSchema>;
-type GetPollIdSchema = z.infer<typeof pollIdSchema>;
+type PollIdSchema = z.infer<typeof pollIdSchema>;
 type UpdatePollSchema = z.infer<typeof updatePollSchema>;
 
 export async function createPollService(data: CreatePollSchema) {
@@ -37,7 +37,7 @@ export async function getAllPollsService() {
   return polls;
 }
 
-export async function getPollService(data: GetPollIdSchema) {
+export async function getPollService(data: PollIdSchema) {
   const poll = await prisma.poll.findUnique({
     where: {
       id: data.id,
@@ -50,7 +50,7 @@ export async function getPollService(data: GetPollIdSchema) {
   return poll;
 }
 
-export async function deletePollService(data: GetPollIdSchema) {
+export async function deletePollService(data: PollIdSchema) {
   await prisma.poll.delete({
     where: {
       id: data.id,
@@ -59,7 +59,7 @@ export async function deletePollService(data: GetPollIdSchema) {
 }
 
 export async function updatePollService(
-  id: GetPollIdSchema,
+  id: PollIdSchema,
   data: UpdatePollSchema,
 ) {
   const poll = await prisma.poll.update({

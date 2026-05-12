@@ -5,6 +5,7 @@ import fastifyApiReference from "@scalar/fastify-api-reference";
 import { ZodError } from "zod";
 
 import { pollRoutes } from "./routes/poll-routes.js";
+import { pollOptionsRoutes } from "./routes/pollOptions-routes.js";
 
 export const app = Fastify();
 
@@ -36,3 +37,4 @@ app.setErrorHandler((error, request, reply) => {
 });
 
 app.register(pollRoutes);
+app.register(pollOptionsRoutes);
