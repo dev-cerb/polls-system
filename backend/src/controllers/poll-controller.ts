@@ -52,7 +52,7 @@ export async function deletePollController(
   reply: FastifyReply,
 ) {
   const params = pollIdSchema.parse(request.params);
-  const message = await deletePollService(params);
+  await deletePollService(params);
 
   return reply.status(200).send({ message: "Enquete excluída com sucesso." });
 }

@@ -6,6 +6,7 @@ import {
   pollIdSchema,
   updatePollSchema,
 } from "../schemas/poll-schemas.js";
+import { getPollStatus } from "../utils/getPollStatus.js";
 
 type CreatePollSchema = z.infer<typeof createPollSchema>;
 type PollIdSchema = z.infer<typeof pollIdSchema>;
@@ -30,11 +31,26 @@ export async function createPollService(data: CreatePollSchema) {
 export async function getAllPollsService() {
   const polls = await prisma.poll.findMany({
     include: {
-      pollOptions: true,
+      pollOptions: {
+        include: {
+          _count: {
+            select: {
+              votes: true,
+            },
+          },
+        },
+      },
     },
   });
 
-  return polls;
+  const pollsWithStatus = polls.map((poll) => {
+    return {
+      status: getPollStatus(poll),
+      ...poll,
+    };
+  });
+
+  return pollsWithStatus;
 }
 
 export async function getPollService(data: PollIdSchema) {
@@ -43,11 +59,28 @@ export async function getPollService(data: PollIdSchema) {
       id: data.id,
     },
     include: {
-      pollOptions: true,
+      pollOptions: {
+        include: {
+          _count: {
+            select: {
+              votes: true,
+            },
+          },
+        },
+      },
     },
   });
 
-  return poll;
+  if (!poll) {
+    return { message: "Esta enquete não existe." };
+  }
+
+  const pollWithStatus = {
+    status: getPollStatus(poll),
+    ...poll,
+  };
+
+  return pollWithStatus;
 }
 
 export async function deletePollService(data: PollIdSchema) {
