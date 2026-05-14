@@ -2,10 +2,43 @@ import * as z from "zod";
 
 import { prisma } from "../lib/prisma.js";
 import { pollOptionsParamsSchema } from "../schemas/pollOptions-schemas.js";
+import { getPollStatus } from "../utils/getPollStatus.js";
 
 type PollOptionsParams = z.infer<typeof pollOptionsParamsSchema>;
 
 export async function createVoteService(ids: PollOptionsParams) {
+  const poll = await prisma.poll.findUnique({
+    where: {
+      id: ids.pollId,
+    },
+    include: {
+      pollOptions: {
+        include: {
+          _count: {
+            select: {
+              votes: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!poll) {
+    return {
+      message: "Não é possivel votar em uma enquete que não está criada.",
+    };
+  }
+
+  const status = getPollStatus(poll);
+
+  if (status !== "Iniciada." && status !== "Em andamento.") {
+    return {
+      message:
+        "Não é possível votar nesta opção pois a enquete não está em período vigente.",
+    };
+  }
+
   const option = await prisma.pollOption.findFirst({
     where: {
       pollId: ids.pollId,

@@ -3,6 +3,7 @@ import {
   createPollSchema,
   pollIdSchema,
   updatePollSchema,
+  pollStatusSchema,
 } from "../schemas/poll-schemas.js";
 import {
   createPollService,
@@ -26,7 +27,9 @@ export async function getAllPollsController(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const polls = await getAllPollsService();
+  const query = pollStatusSchema.parse(request.query);
+
+  const polls = await getAllPollsService(query);
 
   return reply.status(200).send(polls);
 }
