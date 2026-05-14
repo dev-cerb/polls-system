@@ -9,5 +9,9 @@ export async function createVoteController(
   const params = pollOptionsParamsSchema.parse(request.params);
   const vote = await createVoteService(params);
 
-  reply.status(201).send(vote);
+  if ("error" in vote) {
+    return reply.status(400).send(vote);
+  }
+
+  return reply.status(201).send(vote);
 }

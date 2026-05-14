@@ -26,6 +26,7 @@ export async function createVoteService(ids: PollOptionsParams) {
 
   if (!poll) {
     return {
+      error: true,
       message: "Não é possivel votar em uma enquete que não está criada.",
     };
   }
@@ -34,6 +35,7 @@ export async function createVoteService(ids: PollOptionsParams) {
 
   if (status !== "Iniciada." && status !== "Em andamento.") {
     return {
+      error: true,
       message:
         "Não é possível votar nesta opção pois a enquete não está em período vigente.",
     };
@@ -47,7 +49,10 @@ export async function createVoteService(ids: PollOptionsParams) {
   });
 
   if (!option) {
-    return { message: "Você não pode fazer essa transação." };
+    return {
+      error: true,
+      message: "Você não pode fazer essa transação.",
+    };
   }
 
   const vote = await prisma.vote.create({

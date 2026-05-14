@@ -81,7 +81,7 @@ export async function getPollService(data: PollIdSchema) {
   });
 
   if (!poll) {
-    return { message: "Esta enquete não existe." };
+    return { error: true, message: "Esta enquete não existe." };
   }
 
   const pollWithStatus = {
@@ -93,11 +93,26 @@ export async function getPollService(data: PollIdSchema) {
 }
 
 export async function deletePollService(data: PollIdSchema) {
+  const poll = await prisma.poll.findUnique({
+    where: {
+      id: data.id,
+    },
+  });
+
+  if (!poll) {
+    return {
+      error: true,
+      message: "A enquete não existe.",
+    };
+  }
+
   await prisma.poll.delete({
     where: {
       id: data.id,
     },
   });
+
+  return { error: false };
 }
 
 export async function updatePollService(
