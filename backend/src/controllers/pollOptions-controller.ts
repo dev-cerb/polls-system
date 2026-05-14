@@ -40,6 +40,10 @@ export async function deletePollOptionsController(
   const params = pollOptionsParamsSchema.parse(request.params);
   const message = await deletePollOptionService(params);
 
+  if ("error" in message) {
+    return reply.status(400).send(message);
+  }
+
   return reply.status(200).send(message);
 }
 
@@ -50,6 +54,10 @@ export async function createPollOptionsController(
   const params = pollOptionsByPollSchema.parse(request.params);
   const body = updatePollOptionSchema.parse(request.body);
   const option = await createPollOptionService(params, body);
+
+  if ("error" in option) {
+    return reply.status(400).send(option);
+  }
 
   return reply.status(201).send(option);
 }

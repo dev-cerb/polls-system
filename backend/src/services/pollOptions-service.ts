@@ -51,7 +51,10 @@ export async function deletePollOptionService(ids: PollOptionsParams) {
   });
 
   if (options.length <= 3) {
-    return { message: "Uma enquete deve ter no mínimo 3 opções." };
+    return {
+      error: true,
+      message: "Uma enquete deve ter no mínimo 3 opções.",
+    };
   }
 
   const hasOption = options.some((e) => {
@@ -60,6 +63,7 @@ export async function deletePollOptionService(ids: PollOptionsParams) {
 
   if (!hasOption) {
     return {
+      error: true,
       message: "Você está tentando excluir uma opção que não é desta enquete.",
     };
   }
@@ -85,6 +89,7 @@ export async function createPollOptionService(
 
   if (!poll) {
     return {
+      error: true,
       message: "Você está tentando criar uma opção em uma enquete inexistente.",
     };
   }

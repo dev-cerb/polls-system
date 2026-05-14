@@ -41,10 +41,8 @@ export async function getPollByIdController(
   const params = pollIdSchema.parse(request.params);
   const poll = await getPollService(params);
 
-  if (!poll) {
-    return reply.status(404).send({
-      message: "Enquete não encontrada.",
-    });
+  if ("error" in poll) {
+    return reply.status(400).send(poll);
   }
 
   return reply.status(200).send(poll);
@@ -55,7 +53,11 @@ export async function deletePollController(
   reply: FastifyReply,
 ) {
   const params = pollIdSchema.parse(request.params);
-  await deletePollService(params);
+  const response = await deletePollService(params);
+
+  if (response.error == true) {
+    return reply.status(400).send(response);
+  }
 
   return reply.status(200).send({ message: "Enquete excluída com sucesso." });
 }
