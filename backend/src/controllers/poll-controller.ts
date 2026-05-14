@@ -29,7 +29,7 @@ export async function getAllPollsController(
 ) {
   const query = pollStatusSchema.parse(request.query);
 
-  const polls = await getAllPollsService(query);
+  const polls = await getAllPollsService(query.status);
 
   return reply.status(200).send(polls);
 }
