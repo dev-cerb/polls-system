@@ -26,12 +26,9 @@ export const pollIdSchema = z.object({
 });
 
 export const pollStatusSchema = z.object({
-  status: z.enum([
-    "Não iniciada.",
-    "Iniciada.",
-    "Em andamento.",
-    "Finalizada.",
-  ]),
+  status: z
+    .enum(["Não iniciada.", "Iniciada.", "Em andamento.", "Finalizada."])
+    .optional(),
 });
 
 export const updatePollSchema = pollBaseSchema

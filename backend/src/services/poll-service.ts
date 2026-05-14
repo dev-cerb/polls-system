@@ -12,7 +12,6 @@ import { getPollStatus } from "../utils/getPollStatus.js";
 type CreatePollSchema = z.infer<typeof createPollSchema>;
 type PollIdSchema = z.infer<typeof pollIdSchema>;
 type UpdatePollSchema = z.infer<typeof updatePollSchema>;
-type PollStatusSchema = z.infer<typeof pollStatusSchema>;
 
 export async function createPollService(data: CreatePollSchema) {
   const poll = await prisma.poll.create({
@@ -30,7 +29,7 @@ export async function createPollService(data: CreatePollSchema) {
   return poll;
 }
 
-export async function getAllPollsService(data: PollStatusSchema) {
+export async function getAllPollsService(status?: string) {
   const polls = await prisma.poll.findMany({
     include: {
       pollOptions: {
@@ -52,12 +51,12 @@ export async function getAllPollsService(data: PollStatusSchema) {
     };
   });
 
-  if (!data.status) {
+  if (!status) {
     return pollsWithStatus;
   }
 
   const filteredPolls = pollsWithStatus.filter((poll) => {
-    return poll.status === data.status;
+    return poll.status === status;
   });
 
   return filteredPolls;
