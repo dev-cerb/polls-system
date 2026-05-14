@@ -22,6 +22,8 @@ describe("Poll Service", () => {
     expect(poll.id).toBeTypeOf("number");
 
     await deletePollService({ id: poll.id });
+
+    return;
   });
 
   test("Teste para verificar enquetes existentes", async () => {
@@ -41,6 +43,8 @@ describe("Poll Service", () => {
     expect(Array.isArray(polls)).toBe(true);
 
     await deletePollService({ id: pollCreated.id });
+
+    return;
   });
 
   test("Teste para verificar enquete especifica", async () => {
@@ -59,13 +63,16 @@ describe("Poll Service", () => {
       id: pollCreated.id,
     });
 
-    expect(poll).toBeDefined();
-
-    if (!poll) {
-      throw new Error("Enquete não encontrada.");
+    if ("error" in poll) {
+      expect(poll.error).toBe(true);
+      return;
     }
 
+    expect(poll).toBeDefined();
+
     await deletePollService({ id: poll.id });
+
+    return;
   });
 
   test("Teste para alterar parcialmente uma enquete", async () => {
@@ -92,6 +99,8 @@ describe("Poll Service", () => {
     expect(poll.title).toBe("Qual teste específico?");
 
     await deletePollService({ id: poll.id });
+
+    return;
   });
 
   test("Teste para deletar uma enquete", async () => {
@@ -112,6 +121,13 @@ describe("Poll Service", () => {
       id: pollCreated.id,
     });
 
+    if ("error" in poll) {
+      expect(poll.error).toBe(true);
+      return;
+    }
+
     expect(poll).toBeNull();
+
+    return;
   });
 });

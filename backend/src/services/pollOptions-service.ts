@@ -58,7 +58,7 @@ export async function deletePollOptionService(ids: PollOptionsParams) {
   }
 
   const hasOption = options.some((e) => {
-    e.id == ids.id;
+    return e.id == ids.id;
   });
 
   if (!hasOption) {
