@@ -6,9 +6,10 @@ import {
   pollIdSchema,
   updatePollSchema,
 } from "../schemas/poll-schemas.js";
+import { getPollStatus } from "../utils/getPollStatus.js";
 
 type CreatePollSchema = z.infer<typeof createPollSchema>;
-type GetPollIdSchema = z.infer<typeof pollIdSchema>;
+type PollIdSchema = z.infer<typeof pollIdSchema>;
 type UpdatePollSchema = z.infer<typeof updatePollSchema>;
 
 export async function createPollService(data: CreatePollSchema) {
@@ -30,27 +31,59 @@ export async function createPollService(data: CreatePollSchema) {
 export async function getAllPollsService() {
   const polls = await prisma.poll.findMany({
     include: {
-      pollOptions: true,
+      pollOptions: {
+        include: {
+          _count: {
+            select: {
+              votes: true,
+            },
+          },
+        },
+      },
     },
   });
 
-  return polls;
+  const pollsWithStatus = polls.map((poll) => {
+    return {
+      status: getPollStatus(poll),
+      ...poll,
+    };
+  });
+
+  return pollsWithStatus;
 }
 
-export async function getPollService(data: GetPollIdSchema) {
+export async function getPollService(data: PollIdSchema) {
   const poll = await prisma.poll.findUnique({
     where: {
       id: data.id,
     },
     include: {
-      pollOptions: true,
+      pollOptions: {
+        include: {
+          _count: {
+            select: {
+              votes: true,
+            },
+          },
+        },
+      },
     },
   });
 
-  return poll;
+  if (!poll) {
+    return { message: "Esta enquete não existe." };
+  }
+
+  const pollWithStatus = {
+    status: getPollStatus(poll),
+    ...poll,
+  };
+
+  return pollWithStatus;
 }
 
-export async function deletePollService(data: GetPollIdSchema) {
+export async function deletePollService(data: PollIdSchema) {
   await prisma.poll.delete({
     where: {
       id: data.id,
@@ -59,7 +92,7 @@ export async function deletePollService(data: GetPollIdSchema) {
 }
 
 export async function updatePollService(
-  id: GetPollIdSchema,
+  id: PollIdSchema,
   data: UpdatePollSchema,
 ) {
   const poll = await prisma.poll.update({

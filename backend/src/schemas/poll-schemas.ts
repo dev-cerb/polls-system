@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-const pollBaseSchema = z.object({
+export const pollBaseSchema = z.object({
   title: z.string().min(3, "O título deve ter pelo menos 3 caracteres."),
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
