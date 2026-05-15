@@ -2,6 +2,7 @@ import Fastify from "fastify";
 import fastifySwagger from "@fastify/swagger";
 import fastifyApiReference from "@scalar/fastify-api-reference";
 import websocket from "@fastify/websocket";
+import fastifyCors from "@fastify/cors";
 
 import { ZodError } from "zod";
 
@@ -13,6 +14,10 @@ import { webSocketRoutes } from "./routes/webSocket-routes.js";
 export const app = Fastify();
 
 app.register(websocket);
+
+app.register(fastifyCors, {
+  origin: "*",
+});
 
 await app.register(fastifySwagger, {
   openapi: {
