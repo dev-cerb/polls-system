@@ -3,6 +3,7 @@ import * as z from "zod";
 import { prisma } from "../lib/prisma.js";
 import { pollOptionsParamsSchema } from "../schemas/pollOptions-schemas.js";
 import { getPollStatus } from "../utils/getPollStatus.js";
+import { clients } from "../lib/webSocket-clients.js";
 
 type PollOptionsParams = z.infer<typeof pollOptionsParamsSchema>;
 
@@ -51,7 +52,7 @@ export async function createVoteService(ids: PollOptionsParams) {
   if (!option) {
     return {
       error: true,
-      message: "Você não pode fazer essa transação.",
+      message: "Essa opção não existe na enquete selecionada.",
     };
   }
 
@@ -59,6 +60,30 @@ export async function createVoteService(ids: PollOptionsParams) {
     data: {
       pollOptionId: ids.id,
     },
+  });
+
+  const updatedOption = await prisma.pollOption.findUnique({
+    where: {
+      id: ids.id,
+    },
+    include: {
+      _count: {
+        select: {
+          votes: true,
+        },
+      },
+    },
+  });
+
+  const pollConnections = clients.get(ids.pollId);
+
+  pollConnections?.forEach((connection) => {
+    connection.send(
+      JSON.stringify({
+        pollOptionId: ids.id,
+        votes: updatedOption?._count.votes,
+      }),
+    );
   });
 
   return vote;
