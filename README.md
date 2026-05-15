@@ -6,6 +6,20 @@
 
 Este projeto consiste no desenvolvimento de um sistema de enquetes em tempo real com perguntas de múltipla escolha.
 
+### Tecnologias
+
+- Node.js
+- TypeScript
+- Fastify
+- Prisma ORM
+- PostgreSQL
+- Docker
+- Zod
+- Vitest
+- WebSocket
+- Swagger
+- Scalar
+
 ---
 
 ## Requisitos
@@ -143,3 +157,31 @@ npx prisma generate
 ```bash
 npm run dev
 ```
+
+---
+
+## Executando os testes
+
+```bash
+npm run test
+```
+
+---
+
+## Atualização em Tempo Real
+
+O sistema utiliza WebSocket para a atualização automática dos votos sem a necessidade de atualizar a página.
+
+### Funcionamento
+
+Ao entrar em uma enquete específica, o frontend deve estabelecer uma conexão WebSocket no endpoint declarado na documentação.
+
+Sempre que um voto é registrado em alguma opção desta enquete, o backend atualiza a contagem de votos e envia em tempo real para todos os clientes que estão conectados naquela enquete.
+
+---
+
+## Melhorias Futuras
+
+- Implementação de autenticação.
+- Criação de frontend para consumo da API.
+- Refatoração de códigos repetidos.

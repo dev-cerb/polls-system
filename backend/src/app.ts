@@ -1,14 +1,23 @@
 import Fastify from "fastify";
 import fastifySwagger from "@fastify/swagger";
 import fastifyApiReference from "@scalar/fastify-api-reference";
+import websocket from "@fastify/websocket";
+import fastifyCors from "@fastify/cors";
 
 import { ZodError } from "zod";
 
 import { pollRoutes } from "./routes/poll-routes.js";
 import { pollOptionsRoutes } from "./routes/pollOptions-routes.js";
 import { voteRoutes } from "./routes/vote-routes.js";
+import { webSocketRoutes } from "./routes/webSocket-routes.js";
 
 export const app = Fastify();
+
+app.register(websocket);
+
+app.register(fastifyCors, {
+  origin: "*",
+});
 
 await app.register(fastifySwagger, {
   openapi: {
@@ -40,3 +49,4 @@ app.setErrorHandler((error, request, reply) => {
 app.register(pollRoutes);
 app.register(pollOptionsRoutes);
 app.register(voteRoutes);
+app.register(webSocketRoutes);
